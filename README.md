@@ -1,89 +1,78 @@
+# TweeBot: Smart Twitter (X) Management and Automation System
 
-# TweeBot: سیستم مدیریت و اتوماسیون هوشمند توئیتر (X)
+**TweeBot** is a powerful and modular Python-based automation tool designed for simultaneous management of multiple Twitter (X) accounts, scheduling, and automatic posting of tweets (text and images).
 
-**TweeBot** یک ابزار اتوماسیون قدرتمند و ماژولار مبتنی بر پایتون است که برای مدیریت همزمان چندین اکانت توئیتر (X)، زمان‌بندی و ارسال خودکار توئیت‌ها (متنی و تصویری) طراحی شده است. این نرم‌افزار مجهز به یک رابط کاربری مدرن (Dark Mode UI) توسعه‌یافته با Tkinter است و معماری آن به صورت دوجزئی (داشبورد مدیریت + هسته اجرایی مستقل) پیاده‌سازی شده تا با سطح پایداری بال و عدم توقف (Freeze) رابط کاربری را در طول پردازش‌های ارسال توئیت فراهم کند.
+This software is equipped with a modern user interface (Dark Mode UI) developed with Tkinter, and its architecture is implemented in a two-part structure (management dashboard + independent execution core) to provide a high level of stability and prevent the user interface from freezing during tweet sending processes.
 
-## معماری سیستم و نحوه عملکرد (Workflow)
+## System Architecture and Workflow
 
-برنامه TweeBot بر پایه تفکیک وظایف (Separation of Concerns) نوشته شده است و از دو بخش اصلی تشکیل می‌شود:
+The architecture of TweeBot is built on the Separation of Concerns and consists of two main parts:
 
-1. **داشبورد مدیریت (twee.py):** وظیفه مدیریت فرآیندها، ثبت اطلاعات حساب‌ها، نگارش توئیت‌ها، پیش‌نمایش تصاویر رسانه‌ای، مدیریت صف ارسال و نمایش گزارش‌ها را بر عهده دارد.
+1. **Management Dashboard (twee.py):** Responsible for managing processes, registering account information, composing tweets, previewing media images, managing the sending queue, and displaying reports.
 
-2. **هسته اجرایی توئیتر (Client.py):** یک ماژول مجزا و مستقل است که وظیفه ارتباط با API توئیتر (نسخه 2.0) از طریق کتابخانه Tweepy، آپلود تصویر و ارسال توئیت را بر عهده دارد.
+2. **Twitter Execution Core (Client.py):** A separate and independent module responsible for communicating with the Twitter API (v2.0) through the Tweepy library, uploading images, and sending tweets.
 
-### چرخه ارسال توئیت در ربات
+### Tweet Sending Cycle in the Bot:
 
-- **آماده‌سازی چرخه ارسال:** با شروع فرآیند ارسال در twee.py، برای هر اکانت به صورت نوبتی، دایرکتوری send پاکسازی شده و اطلاعات لازم (Tweet_information.txt و pic.jpeg) در آن کپی می‌شود.
+- **Preparation of the sending cycle:** With the start of the sending process in twee.py, for each account in turn, the send directory is cleared, and the necessary information (Tweet_information.txt and pic.jpeg) is copied into it.
 
-- **فراخوانی فرآیند فرعی (Subprocess):** فایل twee.py فایل اجرایی Client.exe را فرامی‌خواند. لایه کاربری منتظر پاسخ می‌ماند در حالی که انیمیشن شمارش معکوس و نتیجه ارسال هر توئیت را نشان می‌دهد.
+- **Calling the Subprocess:** The twee.py file calls the executable file Client.exe.
 
-- **اجرای هسته و تایید هویت:** برنامه Client.exe اطلاعات را از پوشه لایه تبادل خوانده، اعتبارسنجی توئیتر را انجام داده و توئیت را ارسال می‌کند.
+The user layer waits for a response while showing a loading animation.
 
-- **بازخورد وضعیت (IPC):** پس از اتمام کار، Client.exe کلمه Tweeted (یا متن خطا) را در فایل result.txt می‌نویسد.
+- **Core Execution and Authentication:** The Client.exe program reads information from the exchange layer folder, performs Twitter validation, and sends the tweet.
 
-- **بروزرسانی لایه کاربری:** فایل twee.py این فایل را خوانده و وضعیت لایو اکانت را در لیست‌باکس به ✔ یا ❌ تغییر داده و در نهایت گزارش نهایی را در دایرکتوری report ذخیره می‌کند.
+- **Status Feedback (IPC):** After finishing the task, Client.exe writes the word Tweeted (or the error text) in the result.txt file.
 
-## ✨ ویژگی‌های کلیدی
+- **User Layer Update:** The twee.py file reads this file and changes the live account status in the listbox to ✔ or ❌, and finally saves the final report in the report directory.
 
-- **مدیریت چندرسانه‌ای حساب‌ها:** امکان افزودن نامحدود اکانت‌های توئیتر به همراه کلیدهای API اختصاصی.
+## ✨ Key Features
 
-- **تفکیک فرآیندها (Multi-processing):** عدم فریز شدن لایه گرافیکی برنامه در زمان ارسال توئیت‌ها به دلیل سپردن بار پردازشی شبکه به Client.exe.
+- **Multimedia Account Management:** Possibility of adding unlimited Twitter accounts along with dedicated API keys.
 
-- **پشتیبانی از توئیت‌های تصویری:** امکان پیوست کردن تصاویر با فرمت .jpeg به هر اکانت به صورت مجزا با قابلیت پیش‌نمایش در محیط برنامه.
+- **Process Separation (Multi-processing):** No freezing of the program's graphical layer during tweet sending due to offloading the network processing load to Client.exe.
 
-- **سیستم گزارش‌دهی هوشمند (Reporting):** تولید خودکار فایل گزارش نهایی پس از پایان کارکرد ربات روی تمام اکانت‌ها.
+- **Support for Image Tweets:** Possibility of attaching images in .jpeg format to each account separately with preview capability within the program environment.
 
-- **رابط کاربری مدرن تیره (Modern Dark UI):** طراحی شده با رنگ‌های استاندارد برای خستگی کمتر چشم در مانیتورینگ طولانی مدت.
+- **Smart Reporting System (Reporting):** Automatic generation of the final report file after the bot finishes working on all accounts.
 
-## 📂 ساختار پوشه‌های پروژه
+- **Modern Dark UI (Modern Dark UI):** Designed with standard colors for less eye fatigue during long-term monitoring.
 
-پس از اولین اجرای برنامه، ساختار دایرکتوری زیر به صورت خودکار ایجاد می‌شود:
+## 📂 Project Folder Structure
+
+After the first execution of the program, the following directory structure is automatically created:
 
 ```text
 TweeBot/
-
 │
-
-├── twee.py                     # داشبورد اصلی مدیریت و رابط کاربری ربات
-
-├── Client.py                   # سورس‌کد هسته ارسال توئیت (Twitter API Worker)
-
-├── Client.exe                  # نسخه کامپایل شده Client.py (باید در کنار twee.py باشد)
-
+├── twee.py                     # Main management dashboard and bot user interface
+├── Client.py                   # Twitter sending core source code (Twitter API Worker)
+├── Client.exe                  # Compiled version of Client.py (must be alongside twee.py)
 │
-
-├── Account/                    # محل ذخیره متون توئیت و اطلاعات حساس اکانت‌ها (فایل‌های txt)
-
-├── picture/                    # تصاویر پیوستی توئیت‌ها با نام‌گذاری منطبق بر شماره اکانت (jpeg)
-
-├── send/                       # پوشه موقت تبادل داده میان داشبورد و هسته اجرایی
-
-├── report/                     # محل ذخیره گزارش عملکرد نهایی ربات (report.txt)
-
+├── Account/                    # Location for storing tweet texts and sensitive account information (txt files)
+├── picture/                    # Attached images of tweets with naming matching the account number (jpeg)
+├── send/                       # Temporary folder for data exchange between the dashboard and the execution core
+├── report/                     # Location for storing the bot's final performance report (report.txt)
 │
-
-├── Configuration/              # دایرکتوری نگهداری آیکون‌ها و استایل‌های برنامه
-
+├── Configuration/              # Directory for maintaining icons and program styles
 │   ├── DesignboltsHandStitchedTwitter.ico
-
 │   └── BlackvariantButtonUiSystemFoldersDrivesSystem.ico
-
-└── result.txt                  # فایل واسط وضعیت موفقیت یا خطای عملیات ارسال
+└── result.txt                  # Interface file for success status or operation sending error
 ```
 
 ---
 
-## 🛠 پیش‌نیازها و نحوه راه‌اندازی
+## 🛠 Prerequisites and Setup
 
-برای اجرای سورس‌کد پایتون، نیاز به پایتون نسخه 3.8 یا بالاتر و کتابخانه‌های زیر دارید:
+To run the Python source code, you need Python version 3.8 or higher and the following libraries:
 
 ```bash
 pip install tweepy pillow
 ```
 
-### کامپایل کردن Client.py به Client.exe
+### Compiling
 
-از آنجا که twee.py فایل خروجی را به صورت Client.exe فراخوانی می‌کند، باید سورس هسته را با استفاده از pyinstaller کامپایل کنید:
+Since twee.py calls the output file as Client.exe, you must compile the core source using pyinstaller:
 
 ```bash
 pip install pyinstaller
@@ -91,17 +80,17 @@ pip install pyinstaller
 pyinstaller --noconfirm --onefile --windowed --icon "<Path to folder>\Configuration\BlackvariantButtonUiSystemFoldersDrivesSystem.ico" "<path to folder>\Client.py"
 ```
 
-- *نکته: پس از ساخت فایل exe در پوشه dist، آن را به دایرکتوری اصلی پروژه (در کنار twee.py) منتقل کرده و نام آن را به Client.exe تغییر دهید.*
+- *Note: After building the exe file in the dist folder, move it to the main project directory (alongside twee.py) and change its name to Client.exe.*
 
 ---
 
-## راهنمای استفاده از برنامه
+## User Guide for the Program
 
-### 1. ثبت حساب‌های کاربری (مدیریت اکانت‌ها)
+### 1. Registering User Accounts (Account Management)
 
-- وارد بخش **⚙ مدیریت اکانت‌ها** شوید.
+- Enter the **⚙ Account Management** section.
 
-- اطلاعات حساب شامل نام کاربری، رمز عبور و توکن‌های 5 گانه Twitter API را وارد کنید:
+- Enter account information including username, password, and the 5 Twitter API tokens:
 
   - API Key / API Secret Key
 
@@ -109,97 +98,108 @@ pyinstaller --noconfirm --onefile --windowed --icon "<Path to folder>\Configurat
 
   - Bearer Token
 
-- دکمه **ثبت اکانت** را بزنید. اکانت‌ها به صورت خودکار با نام‌گذاری عددی (مانند 1.txt، 2.txt) ذخیره می‌شوند.
+- Click the **Register Account** button.
 
-> برای دسترسی به این توکن های اکانت، باید وارد سایت [developer.twitter.com](https://developer.twitter.com/en/portal/projects-and-apps) بشوید و پس از وارد نام کاربری و رمز عبور به این توکن ها دسترسی پیدا کنید.
+  Accounts are automatically saved with numerical naming (such as 1.txt, 2.txt).
 
-### 2. نگارش متن و انتخاب تصویر توئیت
+> To access these account tokens, you must enter the website [developer.twitter.com](https://developer.twitter.com/en/portal/projects-and-apps) and access these tokens after entering the username and password.
 
-- وارد بخش **نوشتن متن توییت** شوید.
+### 2. Composing Text and Selecting Tweet Image
 
-- از ستون سمت چپ، اکانت مورد نظر خود را انتخاب کنید.
+- Enter the **Write Tweet Text** section.
 
-- متن توئیت را در کادر متنی بنویسید.
+- From the left column, select your desired account.
 
-- در صورت تمایل، دکمه **Browse** را زده و یک تصویر با فرمت .jpeg انتخاب کنید.
+- Write the tweet text in the text box.
 
-- دکمه **ثبت توییت** را فشار دهید.
+- If desired, click the **Browse** button and select an image with .jpeg format.
 
-### 3. اجرای ربات و اتوماسیون ارسال
+- Press the **Register Tweet** button.
 
-- از منوی اصلی وارد بخش **اجرای ربات** شوید.
+### 3. Running the Bot and Sending Automation
 
-- سیستم به صورت خودکار و ترتیبی از اکانت شماره 1 شروع کرده، اطلاعات را به هسته ارسال منتقل و Client.exe را اجرا می‌کند.
+- From the main menu, enter the **Run Bot** section.
 
-- پس از شروع فرآیند ارسال برای هر اکانت، دو پنجره باز میشود. پنجره اول، countdown است که برای محدودیت ها تعبیه شده. پنجره دوم که با کمی تاخیر نسبت به پنجره اول باز میشود، نتیجه ارسال توئیت یا در صورت ارسال نشدن آن، متن ارور را نمایش میدهد.
+- The system starts automatically and sequentially from account number 1, transfers the information to the sending core, and executes Client.exe.
 
-- وضعیت هر اکانت به صورت زنده با علامت‌های ✔ (موفق) یا ❌ (ناموفق) همراه با پیش‌نمایش تصویر و متن نمایش داده می‌شود.
+- After starting the sending process for each account, two windows open.
 
----
+  The first window is countdown, which is built-in for limitations.
 
-## ساختار اطلاعاتی فایل‌های اکانت
+  The second window, which opens with a slight delay relative to the first window, displays the result of sending the tweet or, if it is not sent, the error text.
 
-هر فایل حساب کاربری در پوشه Account به صورت استاندارد خط به خط ذخیره می‌شود. ساختار خطوط به شرح زیر است و تغییر دستی آن توصیه نمی‌شود:
-
-- **خط 1:** Username
-
-- **خط 2:** Password
-
-- **خط 3:** خروجی خالی (پدینگ)
-
-- **خط 4:** API_KEY
-
-- **خط 5:** API_SECRET_KEY
-
-- **خط 6:** Bearer_Token
-
-- **خط 7:** ACCESS_TOKEN
-
-- **خط 8:** ACCESS_TOKEN_SECRET
-
-- **خط 9 به بعد:** متن توئیت (Tweet Text)
-
--
-
-> بعد از پایان فرآیند ارسال توئیت ها، در فایل report.txt که در پوشه report قرار دارد، اطلاعات و نتایج آنها را برای هر اکانت مینویسد
+- The status of each account is displayed live with ✔ (successful) or ❌ (unsuccessful) signs along with a preview of the image and text.
 
 ---
 
-## محدودیت های TweeBot
+## Data Structure of Account Files
 
-محدودیت‌های API توییتر (X) که باید به آنها توجه بشود، به این صورت می باشد:
+Each user account file in the Account folder is stored line by line in a standard format.
 
-## 1. محدودیت‌های ارسال توییت
+The structure of the lines is as follows and manual modification is not recommended:
 
-نوع محدودیت‌ها به دو دسته **سطح کاربر (User-leve)** و **سطح اپلیکیشن (App-leve)** تقسیم می‌شود:
+- **Line 1:** Username
 
-- هر اکانت (Access Token اختصاصی) در پکیج‌های استاندارد/Basic مجاز به ارسال حداکثر **100 توییت در هر بازه 15 دقیقه‌ای** است.
+- **Line 2:** Password
 
-- **محدودیت روزانه اپلیکیشن (App Rate Limit):** **اگر برای همه اکانت‌ها از یک API Key مشترک استفاده کنید:** کل ربات شما در طول 24 ساعت مجاز به ارسال حداکثر 10,000 توییت (در پلن Basic) میان تمام اکانت‌ها خواهد بود.
+- **Line 3:** Empty output (padding)
 
-  - **اگر هر اکانت API Key اختصاصی خودش را داشته باشد:** این محدودیت اپلیکیشن عملاً دور زده می‌شود و هر اکانت سقف مستقل خودش را خواهد داشت.
+- **Line 4:** API_KEY
 
-- محدودیت پلتفرم برای اکانت‌های رایگان خود توییتر برای اکانت‌های معمولی و تأیید نشده (بدون تیک آبی)، محدودیت سخت‌گیرانه **50 پست در روز** را اعمال می‌کند تا جلوی اسپم گرفته شود.
+- **Line 5:** API_SECRET_KEY
 
-## 2. محدودیت‌های آپلود تصویر
+- **Line 6:** Bearer_Token
 
-- **تعداد آپلود روزانه:** هر اکانت مجاز به آپلود حداکثر **500 تصویر در 24 ساعت** است.
+- **Line 7:** ACCESS_TOKEN
 
-- **حجم و فرمت فایل:** فرمت انتخابی برای پیوست عکس ها برای هر اکانت .jpeg است. حجم تصاویر نباید از **5 مگابایت** برای حساب‌های معمولی فراتر برود.
+- **Line 8:** ACCESS_TOKEN_SECRET
 
-### 🔴 یک تهدید خطرناک در ارسال توئیت ها
+- **Line 9 onwards:** Tweet Text
 
-اگر کاربر تعداد زیادی اکانت را ردیف کند، ربات بلافاصله پس از اتمام کار Client.exe اول، دکمه اجرایی اکانت دوم را می‌زند. ارسال رگباری پست روی اکانت‌های مختلف از یک IP به سرعت فرآیند شما را با خطای **HTTP 429 (Too Many Requests)** مواجه می‌کند.
+> After the end of the tweet sending process, it writes their information and results for each account in the report.txt file located in the report folder
 
-## راه حل برای ارور 429
+---
 
-- **توزیع بار :** چون فرآیند ارسال برای هر اکانت به صورت تک‌تک اجرا می‌شود و فرآیند قبلی بسته می‌شود، ریسک ارسال همزمان (Concurrent Requests) و مشکوک شدن توییتر به رفتار رباتیک به شدت کاهش می‌یابد.
+## TweeBot Limitations:
 
-- **بسته‌شدن سشن‌ها:** ساختار Client.exe به شکلی است که پس از چند ثانیه با `window.destroy()` یا متد خروج کاملاً بسته می‌شود. این امر باعث بازنشانی Connection هدرها شده و احتمال بلاک شدن موقت IP را کم می‌کند.
+Twitter (X) API limitations that must be taken into consideration are as follows:
 
-- چون فایل twee.py پنجره‌های Client.exe را به صورت ترتیبی باز می‌کند، تا زمانی که پنجره قبلی بسته نشود، سراغ اکانت بعدی نمی‌رود.
+## 1. Tweet Sending Limitations
 
-- این شمارش معکوس 15 ثانیه‌ای به عنوان یک **وقفه اجباری (Delay)** بین سوئیچ کردن از یک اکانت به اکانت بعدی عمل می‌کند.
+The type of limitations is divided into two categories: **User-level** and **App-level**:
 
-- این حرکت جلوی ارسال رگباری (Spammy) پشت سر هم را می‌گیرد و رفتار ربات را برای توییتر طبیعی‌تر جلوه می‌دهد.
+- **Time limit of each account's user** (dedicated Access Token) in standard/Basic packages is allowed to send a maximum of **100 tweets in each 15-minute interval**.
 
+- **App Rate Limit:** **If you use a shared API Key for all accounts:** Your entire bot will be allowed to send a maximum of 10,000 tweets (in the Basic plan) among all accounts over 24 hours.
+
+- **If each account has its own dedicated API Key:** This app limitation is practically bypassed and each account will have its own independent limit.
+
+- The platform limitation for Twitter's own free accounts applies a strict limitation of **50 posts per day** for regular and unverified accounts (without a blue checkmark) to prevent spam.
+
+## 2. Image Upload Limitations
+
+- **Daily upload count:** Each account is allowed to upload a maximum of **500 images in 24 hours**.
+
+- **File size and format:** The selected format for attaching photos for each account is .jpeg.
+
+  The size of the images must not exceed **5 MB** for regular accounts.
+
+### 🔴 A Dangerous Threat in Sending Tweets:
+
+If the user lines up a large number of accounts, the bot immediately clicks the execution button of the second account after the first Client.exe finishes its task.
+
+Torrential posting on different accounts from a single IP will quickly confront your process with the **HTTP 429 (Too Many Requests)** error.
+
+## Solution for Error 429
+
+- **Load Distribution:** Since the sending process for each account is executed one by one and the previous process is closed, the risk of simultaneous sending (Concurrent Requests) and Twitter becoming suspicious of robotic behavior is significantly reduced.
+
+- **Closing Sessions:** The structure of Client.exe is designed such that after a few seconds, it completely closes via `window.destroy()` or an exit method.
+
+  This causes the Connection headers to reset and reduces the probability of a temporary IP block.
+
+- Since the twee.py file opens Client.exe windows sequentially, it does not move on to the next account until the previous window is closed.
+
+- This 15-second countdown acts as an **enforced delay (Delay)** between switching from one account to the next.
+
+- This move prevents consecutive spammy sending and makes the bot's behavior appear more natural to Twitter.
