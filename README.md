@@ -8,9 +8,9 @@ This software is equipped with a modern user interface (Dark Mode UI) developed 
 
 The architecture of TweeBot is built on the Separation of Concerns and consists of two main parts:
 
-1. **Management Dashboard (twee.py):** Responsible for managing processes, registering account information, composing tweets, previewing media images, managing the sending queue, and displaying reports.
+1. **Management Dashboard (TweeBot.exe):** Responsible for managing processes, registering account information, composing tweets, previewing media images, managing the sending queue, and displaying reports.
 
-2. **Twitter Execution Core (Client.py):** A separate and independent module responsible for communicating with the Twitter API (v2.0) through the Tweepy library, uploading images, and sending tweets.
+2. **Twitter Execution Core (Client.exe):** A separate and independent module responsible for communicating with the Twitter API (v2.0) through the Tweepy library, uploading images, and sending tweets.
 
 ### Tweet Sending Cycle in the Bot:
 
@@ -45,7 +45,7 @@ After the first execution of the program, the following directory structure is a
 ```text
 TweeBot/
 │
-├── twee.py                     # Main management dashboard and bot user interface
+├── TweeBot.exe                     # Main management dashboard and bot user interface
 ├── Client.py                   # Twitter sending core source code (Twitter API Worker)
 ├── Client.exe                  # Compiled version of Client.py (must be alongside twee.py)
 │
@@ -80,11 +80,13 @@ pip install pyinstaller
 pyinstaller --noconfirm --onefile --windowed --icon "<Path to folder>\Configuration\BlackvariantButtonUiSystemFoldersDrivesSystem.ico" "<path to folder>\Client.py"
 ```
 
-- *Note: After building the exe file in the dist folder, move it to the main project directory (alongside twee.py) and change its name to Client.exe.*
+- *Note: After building the exe file in the dist folder, move it to the main project directory (alongside TweeBot.exe) and change its name to Client.exe.*
 
 ---
 
 ## User Guide for the Program
+
+> You have to open the TweeBot.exe. Never don't open Client.exe
 
 ### 1. Registering User Accounts (Account Management)
 
