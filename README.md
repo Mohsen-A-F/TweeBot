@@ -87,9 +87,12 @@ pyinstaller --noconfirm --onefile --windowed --icon "<Path to folder>\Configurat
 ## User Guide for the Program
 
 > Notices:
->     1.You have to open the TweeBot.exe. Never don't open Client.exe
->     2.When countdown windows opens, another window will open that it's blank for a few second and not bug rather, it's wait for giving answer form twitter servers.  
 
+>1. You have to open the TweeBot.exe. Never don't open Client.exe
+
+>2. Run TweeBot.exe with administrator (Specialy first time running)  
+
+>3. When countdown windows opens, another window will open that it's blank for a few second and not bug rather, it's wait for giving answer form twitter servers.
 
 ### 1. Registering User Accounts (Account Management)
 
